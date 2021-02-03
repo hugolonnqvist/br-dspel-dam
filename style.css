@@ -1,0 +1,49 @@
+body {
+    margin: 0px;
+}
+
+header {
+    height: 12vh;
+    margin: 0px;
+    background-color: orange;
+}
+
+header > h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 24px;
+    margin: 0px;
+    
+}
+
+.centerBoard {
+    display: flex;
+    justify-content: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+table {
+    width: 36vw;
+    height: 36vw;
+}
+
+.square {
+    border: 1px solid;
+    width: 4vw;
+    height: 4vw;
+}
+
+footer {
+    height: 12vh;
+    background-color: orange;
+}
+
+footer > p {
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 24px;
+}
