@@ -37,6 +37,14 @@ table {
     height: 4vw;
 }
 
+.white {
+    background-color: white;
+}
+
+.black {
+    background-color: black;
+}
+
 footer {
     height: 12vh;
     background-color: orange;
