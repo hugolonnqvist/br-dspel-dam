@@ -35,16 +35,21 @@ let block = document.getElementsByClassName("square");
 
 function generatePieces() {
     let blackSquare = document.getElementsByClassName("square black");
+    
+    let pawnImg = document.createElement("img");
+    pawnImg.src = "./imges/pawn.png"
+    pawnImg.classList.add("pawn");
+
 
     for (let i = 0; i < 50; i++) {
+        let pawn = [];
+        pawn[i] = document.createElement("div");
+
         if (i >= 0 && i< 20) {
-            blackSquare[i].style.color = "white";
-            blackSquare[i].innerHTML = "O";
-            console.log(blackSquare[i]);
+            blackSquare[i].append(pawnImg);        
         }
         else if (i >= 30 && i <= 50) {
-            blackSquare[i].style.color = "white";
-            blackSquare[i].innerHTML = "O"
+        
         }
     }
 }
