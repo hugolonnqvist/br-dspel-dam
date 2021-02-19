@@ -1,12 +1,17 @@
 "use strict";
 
+function coordinateToIndex(x, y) {
+    return y * boardWidth + x;
+}
+
+
 
 function createBoard() {
     let board = document.querySelector(".board");
     let counter = 0;
     let flag = false;
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 64; i++) {
         let square = [];
         square[i] = document.createElement("div");
 
@@ -23,7 +28,7 @@ function createBoard() {
             flag = !flag;
         }
         board.append(square[i]);
-        if (counter === 10) {
+        if (counter === 8) {
             flag = !flag;
             counter = 0;
         }
@@ -31,31 +36,31 @@ function createBoard() {
 }
 
 
-let block = document.getElementsByClassName("square");
-
 function generatePieces() {
     let blackSquare = document.getElementsByClassName("square black");
-    
-    let pawnImg = document.createElement("img");
-    pawnImg.src = "./imges/pawn.png"
-    pawnImg.classList.add("pawn");
 
-
-    for (let i = 0; i < 50; i++) {
-        let pawn = [];
-        pawn[i] = document.createElement("div");
-
-        if (i >= 0 && i< 20) {
-            blackSquare[i].append(pawnImg);        
-        }
-        else if (i >= 30 && i <= 50) {
-        
-        }
+    for (let i = 0; i < 12; i++) {
+        blackSquare[i].innerHTML = `<img class="pawn" src="./imges/readpawn.png">`;
+        blackSquare[i + 20].innerHTML = `<img class="pawn" src="./imges/readpawn.png">`;
     }
+
+    let piece = document.getElementsByClassName("pawn");
+   
+    for (let i = 0; i < piece.length; i++) {
+        piece[i].addEventListener("click",() => {
+        //Highlighta rutorna som pjäsen kan flytta till
+        })
+    }
+}
+
+function movePieces() {
+    
 }
 
 createBoard();
 generatePieces();
+movePieces();
+
 
 /*
 for (let i = 0; i < squares.length; i++) {

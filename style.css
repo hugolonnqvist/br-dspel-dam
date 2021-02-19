@@ -22,13 +22,8 @@ header > h1 {
 
 .board {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
-}
-
-table {
-    width: 36vw;
-    height: 36vw;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
 }
 
 .square {
@@ -43,6 +38,11 @@ table {
 
 .black {
     background-color: black;
+}
+
+.pawn {
+    width: 4vw;
+    height: 4vw;
 }
 
 footer {
