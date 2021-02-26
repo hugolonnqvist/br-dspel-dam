@@ -33,22 +33,13 @@ header>h1 {
     height: 4vw;
 }
 
-.white {
-    background-color: white;
+.grey {
+    background-color: grey;
+    
 }
 
-.black {
-    background-color: black;
-}
-
-.pawn {
-    width: 4vw;
-    height: 4vw;
-}
-
-.dot {
-    width: 1vw;
-    height: 1vw;
+.red {
+    background-color:lightcoral;
 }
 
 footer {
