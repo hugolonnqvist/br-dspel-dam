@@ -42,6 +42,10 @@ header>h1 {
     background-color:lightcoral;
 }
 
+.king {
+    color: red;
+}
+
 footer {
     height: 12vh;
     background-color: orange;
