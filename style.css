@@ -11,6 +11,8 @@ header {
 
 header>h1 {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    text-align: center;
     padding: 24px;
     margin: 0px;
 }
@@ -42,12 +44,11 @@ header>h1 {
 }
 
 .possibleJumpMove {
-    background-color: purple;
+    background-color: lightgrey;
 }
 
 .grey {
     background-color: grey;
-    
 }
 
 .red {
@@ -55,16 +56,23 @@ header>h1 {
 }
 
 .king {
-    border-color: white;
+    background-image: url("images/crown.png");
+    background-size: 4vw 4vw;
+}
+
+.winDiv {
+    font-size: 100px;
+    text-align: center;
 }
 
 footer {
-    height: 12vh;
+    height: 8vh;
     background-color: orange;
 }
 
 footer>p {
     font-size: 18px;
     font-family: 'Courier New', Courier, monospace;
+    text-align: center;
     padding: 24px;
 }

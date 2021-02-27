@@ -14,7 +14,6 @@
         });
       e.target.classList.add("active");
       showMoves(e.target, color);
-      illegalMoves();
     }
 
     if (active !== null) {
@@ -70,31 +69,57 @@
     );
   }
 
-  function illegalMoves(illegalSquaresList) {
-    let squares = document.getElementsByClassName("square");
-    let illegalSquares = [];
-    let flag = true;
-
-    for (let i = 0; i < squares.length; i++) {
-      if (flag) {
-        illegalSquares.push(squares[i]);
+  function checkEdge(activeSquare, move, isKing) {
+    if (isKing) {
+      return (
+        (move === -7 && activeSquare % 8 !== 0) ||
+        (move === -9 && activeSquare % 8 !== 7) ||
+        (move === 9 && activeSquare % 8 !== 0) ||
+        (move === 7 && activeSquare % 8 !== 7)
+      );
+    } else {
+      if (turn) {
+        return (
+          (move === -7 && activeSquare % 8 !== 0) ||
+          (move === -9 && activeSquare % 8 !== 7)
+        );
       }
-      flag = !flag;
-
-      if ((i + 1) % 8 === 0) {
-        flag = !flag;
-      }
+      return (
+        (move === 9 && activeSquare % 8 !== 0) ||
+        (move === 7 && activeSquare % 8 !== 7)
+      );
     }
-
-    return illegalSquares.id;
   }
-
+  function checkJumpEdge(activeSquare, move, isKing) {
+    if (isKing) {
+      return (
+        (move === -7 && activeSquare % 8 !== 0 && activeSquare % 8 !== 1) ||
+        (move === -9 && activeSquare % 8 !== 7 && activeSquare % 8 !== 6) ||
+        (move === 9 && activeSquare % 8 !== 0 && activeSquare % 8 !== 1) ||
+        (move === 7 && activeSquare % 8 !== 7 && activeSquare % 8 !== 6)
+      );
+    } else {
+      if (turn) {
+        return (
+          (move === -7 && activeSquare % 8 !== 0 && activeSquare % 8 !== 1) ||
+          (move === -9 && activeSquare % 8 !== 7 && activeSquare % 8 !== 6)
+        );
+      }
+      return (
+        (move === 9 && activeSquare % 8 !== 0 && activeSquare % 8 !== 1) ||
+        (move === 7 && activeSquare % 8 !== 7 && activeSquare % 8 !== 6)
+      );
+    }
+  }
   function showMoves(activeSquare, color) {
     const squares = document.getElementsByClassName("square");
     const enemyColor = color === "red" ? "grey" : "red";
+    let isKing = false;
+
     let possibleMoves;
     if (activeSquare.classList.contains("king")) {
       possibleMoves = [9, 7, -9, -7];
+      isKing = !isKing;
     } else {
       possibleMoves = color === "red" ? [-9, -7] : [9, 7];
     }
@@ -103,7 +128,8 @@
       if (activeSquare.id - move > 0 && activeSquare.id - move < 64) {
         if (
           !squares[activeSquare.id - move].classList.contains("red") &&
-          !squares[activeSquare.id - move].classList.contains("grey")
+          !squares[activeSquare.id - move].classList.contains("grey") &&
+          checkEdge(+activeSquare.id, move, isKing)
         ) {
           squares[activeSquare.id - move].classList.add("possibleMove");
         }
@@ -112,7 +138,8 @@
         if (
           squares[activeSquare.id - move].classList.contains(enemyColor) &&
           !squares[activeSquare.id - move * 2].classList.contains("red") &&
-          !squares[activeSquare.id - move * 2].classList.contains("grey")
+          !squares[activeSquare.id - move * 2].classList.contains("grey") &&
+          checkJumpEdge(activeSquare.id, move, isKing)
         ) {
           squares[activeSquare.id - move * 2].classList.add("possibleJumpMove");
         }
@@ -147,8 +174,10 @@
       possibleMoves.forEach((c) => c.classList.remove("possibleMove"));
       possibleJumpMove.forEach((c) => c.classList.remove("possibleJumpMove"));
       checkForKing(square, color);
-      checkForWin();
       turn = !turn;
+
+      // Let DOM update
+      setTimeout(checkForWin, 200);
     }
 
     function takeEnemyPiece() {
@@ -177,8 +206,16 @@
 
   function checkForWin() {
     if (document.querySelectorAll(".red").length === 0) {
-      document.querySelector();
+      win("Grey");
     } else if (document.querySelectorAll(".grey").length === 0) {
+      win("Red");
+    }
+    function win(color) {
+      let main = document.querySelector("main");
+      let winDiv = document.createElement("div");
+      winDiv.classList.add("winDiv");
+      winDiv.innerHTML = `${color} has won!`;
+      main.append(winDiv);
     }
   }
 
