@@ -2,15 +2,32 @@
 
 (() => {
   let turn = true;
-  let greyPiecesLeft = 12;
-  let redPiecesLeft = 12;
+
+  function onClick(e) {
+    const active = document.querySelector(".active");
+    const color = turn ? "red" : "grey";
+    if (e.target.classList.contains(color)) {
+      document
+        .querySelectorAll(".active,.possibleMove,.possibleJumpMove")
+        .forEach((c) => {
+          c.classList.remove("active", "possibleMove", "possibleJumpMove");
+        });
+      e.target.classList.add("active");
+      showMoves(e.target, color);
+      illegalMoves();
+    }
+
+    if (active !== null) {
+      movePieces(e.target);
+    }
+  }
 
   function generateBoard(board) {
     function createSquare(idNumber) {
       const square = document.createElement("div");
       square.classList.add("square");
       square.id = idNumber;
-      square.addEventListener("click", () => moveSqaure(square));
+      square.addEventListener("click", onClick);
       return square;
     }
 
@@ -20,7 +37,7 @@
     }
 
     let idNumber = 0;
-    const elements = board.map((row, rowIndex) => {
+    const elements = board.map((row) => {
       return row.map(() => {
         const square = createSquare(idNumber++);
         return square;
@@ -53,219 +70,117 @@
     );
   }
 
-  //Function for moving the pieces
-  function moveSqaure(square) {
+  function illegalMoves(illegalSquaresList) {
     let squares = document.getElementsByClassName("square");
-    let possibleMoves = [9, 7, 18, 14];
+    let illegalSquares = [];
+    let flag = true;
 
-    //Moves a piece, switch the turn and checks for possible kings
-    function move(moveToId, color) {
-      squares[moveToId].classList.add(`${color}`);
-      square.classList.remove(`${color}`);
-      makePieceKing(squares, moveToId);
-      turn = !turn;
-      checkForWin();
+    for (let i = 0; i < squares.length; i++) {
+      if (flag) {
+        illegalSquares.push(squares[i]);
+      }
+      flag = !flag;
+
+      if ((i + 1) % 8 === 0) {
+        flag = !flag;
+      }
     }
 
-    //If true red moves, if false grey moves
-    if (turn) {
-      //Reds turn
-      movePiece(
-        possibleMoves.map((v) => v * -1),
-        "red",
-        "grey"
-      );
+    return illegalSquares.id;
+  }
+
+  function showMoves(activeSquare, color) {
+    const squares = document.getElementsByClassName("square");
+    const enemyColor = color === "red" ? "grey" : "red";
+    let possibleMoves;
+    if (activeSquare.classList.contains("king")) {
+      possibleMoves = [9, 7, -9, -7];
     } else {
-      //Greys turn
-      movePiece(possibleMoves, "grey", "red");
+      possibleMoves = color === "red" ? [-9, -7] : [9, 7];
     }
 
-    //Function which checks if a move is possible and if it is sets an eventlistener on that square
-    function ordinaryMoves(
-      squares,
-      square,
-      moves,
-      moveLeft,
-      moveRight,
-      allyColor,
-      enemyColor
-    ) {
-      if (
-        squares[square.id - moves[0]].classList.contains(allyColor) === false &&
-        squares[square.id - moves[0]].classList.contains(enemyColor) === false
-      ) {
-        squares[square.id - moves[0]].addEventListener("click", moveLeft, {
-          once: true,
-        });
-      }
-
-      if (
-        squares[square.id - moves[1]].classList.contains(allyColor) === false &&
-        squares[square.id - moves[1]].classList.contains(enemyColor) === false
-      ) {
-        squares[square.id - moves[1]].addEventListener("click", moveRight, {
-          once: true,
-        });
-      }
-    }
-
-    //Function which checks if a jump move is possible and if it is sets an eventlistener on that square
-    function jumpOverPieceMoves(
-      squares,
-      square,
-      moves,
-      jumpOverPiece1,
-      jumpOverPiece2,
-      allyColor,
-      enemyColor
-    ) {
-      if (squares[square.id - moves[0]].classList.contains(enemyColor)) {
+    possibleMoves.forEach((move) => {
+      if (activeSquare.id - move > 0 && activeSquare.id - move < 64) {
         if (
-          squares[square.id - moves[2]].classList.contains(enemyColor) ===
-            false &&
-          squares[square.id - moves[2]].classList.contains(allyColor) === false
+          !squares[activeSquare.id - move].classList.contains("red") &&
+          !squares[activeSquare.id - move].classList.contains("grey")
         ) {
-          squares[square.id - moves[2]].addEventListener(
-            "click",
-            jumpOverPiece1,
-            {
-              once: true,
-            }
-          );
+          squares[activeSquare.id - move].classList.add("possibleMove");
         }
       }
-
-      if (squares[square.id - moves[1]].classList.contains(enemyColor)) {
+      if (activeSquare.id - move * 2 > 0 && activeSquare.id - move * 2 < 64) {
         if (
-          squares[square.id - moves[3]].classList.contains(enemyColor) ===
-            false &&
-          squares[square.id - moves[3]].classList.contains(allyColor) === false
+          squares[activeSquare.id - move].classList.contains(enemyColor) &&
+          !squares[activeSquare.id - move * 2].classList.contains("red") &&
+          !squares[activeSquare.id - move * 2].classList.contains("grey")
         ) {
-          squares[square.id - moves[3]].addEventListener(
-            "click",
-            jumpOverPiece2,
-            {
-              once: true,
-            }
-          );
+          squares[activeSquare.id - move * 2].classList.add("possibleJumpMove");
         }
       }
+    });
+  }
+
+  function checkForKing(square, color) {
+    if (square.id > 55 && color === "red") {
+      square.classList.add("king");
+    } else if (square.id < 8 && color === "grey") {
+      square.classList.add("king");
+    }
+  }
+
+  function movePieces(square) {
+    const allSquares = document.getElementsByClassName("square");
+    const activeSquare = document.querySelector(".active");
+    const color = activeSquare.classList.contains("red") ? "red" : "grey";
+    const enemyColor = color === "red" ? "grey" : "red";
+    const possibleMoves = document.querySelectorAll(".possibleMove");
+    const possibleJumpMove = document.querySelectorAll(".possibleJumpMove");
+
+    function move() {
+      if (activeSquare.classList.contains("king")) {
+        square.classList.add("king");
+        activeSquare.classList.remove("king");
+      }
+      square.classList.add(color);
+      activeSquare.classList.remove("active");
+      activeSquare.classList.remove(color);
+      possibleMoves.forEach((c) => c.classList.remove("possibleMove"));
+      possibleJumpMove.forEach((c) => c.classList.remove("possibleJumpMove"));
+      checkForKing(square, color);
+      checkForWin();
+      turn = !turn;
     }
 
-    //Checks for a possible king and then creates it
-    function makePieceKing(squares, moveToId) {
-      console.log(square.id);
+    function takeEnemyPiece() {
+      allSquares[
+        activeSquare.id - (activeSquare.id - square.id) / 2
+      ].classList.remove(enemyColor);
+    }
+
+    if (square.classList.contains("possibleMove")) {
+      move();
+    }
+    if (square.classList.contains("possibleJumpMove")) {
+      move();
+      takeEnemyPiece();
       if (
-        squares[moveToId].classList.contains("red") &&
-        moveToId > squares.length - 8
+        allSquares[
+          activeSquare.id - (activeSquare.id - square.id) / 2
+        ].classList.contains("king")
       ) {
-        squares[moveToId].classList.add("king");
-      }
-      if (squares[moveToId].classList.contains("grey") && moveToId < 8) {
-        squares[moveToId].classList.add("king");
-      }
-    }
-
-    function kingMoves(square, squares, moveKing) {
-      let possibleKingMoves = [9, 8, 7, 1, -1, -7, -8, -9];
-
-      if (square.classList.contains("king")) {
-        possibleKingMoves.forEach((possibleMove) => {
-          squares[square.id - possibleMove].onclick = moveKing(possibleMove);
-        });
-      }
-    }
-
-    //The function for moving the pieces
-    function movePiece(moves, allyColor, enemyColor, possibleKingMoves) {
-      if (square.classList.contains(allyColor)) {
-        function moveKing(possibleMove) {
-          move(square.id - possibleMove, allyColor);
-        }
-
-        function moveLeft() {
-          move(square.id - moves[0], allyColor);
-          squares[square.id - moves[1]].removeEventListener("click", moveRight);
-        }
-
-        function moveRight() {
-          move(square.id - moves[1], allyColor);
-          squares[square.id - moves[0]].removeEventListener("click", moveLeft);
-          //makePieceKing(squares, square);
-        }
-
-        function jumpOverPiece1() {
-          move(square.id - moves[2], allyColor);
-          squares[square.id - moves[0]].classList.remove(enemyColor);
-          enemyColor === "red" ? redPiecesLeft-- : greyPiecesLeft--;
-          //makePieceKing(squares, square);
-          squares[square.id - moves[3]].removeEventListener(
-            "click",
-            jumpOverPiece2
-          );
-        }
-
-        function jumpOverPiece2() {
-          move(square.id - moves[3], allyColor);
-          squares[square.id - moves[1]].classList.remove(enemyColor);
-          enemyColor === "red" ? redPiecesLeft-- : greyPiecesLeft--;
-          //makePieceKing(squares, square);
-          squares[square.id - moves[2]].removeEventListener(
-            "click",
-            jumpOverPiece1
-          );
-        }
-
-        kingMoves(square, squares, possibleKingMoves, moveKing);
-
-        ordinaryMoves(
-          squares,
-          square,
-          moves,
-          moveLeft,
-          moveRight,
-          allyColor,
-          enemyColor
-        );
-
-        jumpOverPieceMoves(
-          squares,
-          square,
-          moves,
-          jumpOverPiece1,
-          jumpOverPiece2,
-          allyColor,
-          enemyColor
-        );
+        allSquares[
+          activeSquare.id - (activeSquare.id - square.id) / 2
+        ].classList.remove("king");
       }
     }
   }
 
   function checkForWin() {
-    if (redPiecesLeft === 0) {
-      alert("GREY WON!");
-    } else if (greyPiecesLeft === 0) {
-      alert("RED WON!");
+    if (document.querySelectorAll(".red").length === 0) {
+      document.querySelector();
+    } else if (document.querySelectorAll(".grey").length === 0) {
     }
   }
-
-  //Previose code
-  /*
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-      let color = null;
-      if (board[i][j] == 2) {
-        color = "red";
-      } else if (board[i][j] == 1) {
-        color = "white";
-      }
-      if (color) {
-        square[
-          coordToIndex(i, j)
-        ].innerHTML = `<img class="pawn" src="./images/${color}pawn.png">`;
-      }
-    }
-  }*/
 
   generateBoard(board);
   generatePieces();

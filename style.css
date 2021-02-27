@@ -28,9 +28,21 @@ header>h1 {
 }
 
 .square {
-    border: 1px solid;
+    border: 1px solid black;
     width: 4vw;
     height: 4vw;
+}
+
+.active {
+    opacity: 70%;
+}
+
+.possibleMove {
+    background-color: lightgrey;
+}
+
+.possibleJumpMove {
+    background-color: purple;
 }
 
 .grey {
@@ -43,7 +55,7 @@ header>h1 {
 }
 
 .king {
-    color: red;
+    border-color: white;
 }
 
 footer {
