@@ -163,6 +163,7 @@
     const possibleMoves = document.querySelectorAll(".possibleMove");
     const possibleJumpMove = document.querySelectorAll(".possibleJumpMove");
 
+    //Function for moving
     function move() {
       if (activeSquare.classList.contains("king")) {
         square.classList.add("king");
@@ -192,6 +193,8 @@
     if (square.classList.contains("possibleJumpMove")) {
       move();
       takeEnemyPiece();
+
+      //Moves the king class with the piece
       if (
         allSquares[
           activeSquare.id - (activeSquare.id - square.id) / 2
